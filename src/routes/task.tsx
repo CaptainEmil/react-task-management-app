@@ -7,6 +7,7 @@ import { getTask, updateTask } from "../tasks";
 
 export async function action({ request, params }: ActionFunctionArgs<any>) {
 	let formData = await request.formData();
+
 	return updateTask(params.taskId, {
 		isDone: formData.get("isDone") === "true",
 	});
@@ -39,7 +40,7 @@ const Contact = () => {
 						<i>No Name</i>
 					)}
 					{" "}
-					<IsDone task={task} />
+					
 				</h1>
 
 				{task?.description && <p>{task?.description}</p>}
@@ -51,44 +52,7 @@ const Contact = () => {
 
 export default Contact;
 
-type IsDoneProps = {
-	task: Nullable<TaskType>
-}
 
-const IsDone = ({ task }: IsDoneProps) => {
-	const fetcher = useFetcher();
-	// yes, this is a `let` for later
-	let isDone = task?.isDone;
-
-	if (fetcher.formData) {
-		isDone = fetcher.formData.get("isDone") === "true";
-	}
-
-	const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-		const form = e.currentTarget.closest('form');
-		fetcher.submit(form);
-	}
-
-	return (
-		<fetcher.Form method="post">
-			<input
-				type="checkbox"
-				name="isDone"
-				value={isDone ? "false" : "true"}
-				defaultChecked={isDone ? false : true}
-				onInput={handleInput}
-				aria-label={
-					isDone
-						? "Remove from isDones"
-						: "Add to isDones"
-				}
-			>
-			</input>
-			<label htmlFor="isDone">Status: {isDone ? "Done" : "Undone"}</label>
-
-		</fetcher.Form >
-	);
-}
 
 
 

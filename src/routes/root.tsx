@@ -1,9 +1,12 @@
-import { Form, Outlet, useLoaderData, redirect, NavLink, useNavigation } from "react-router-dom";
-import { getTasks, createTask } from "../tasks";
+import { Form, Outlet, useLoaderData, redirect, NavLink, useNavigation, useFetcher, ActionFunctionArgs } from "react-router-dom";
+import { getTasks, createTask, updateTask, getTask } from "../tasks";
 import TaskType from "src/types/Task";
 import { useState } from "react";
+import Nullable from "src/types/Nullable";
 
-export async function action(): Promise<Response> {
+export async function action({ request, params }: ActionFunctionArgs<any>): Promise<Response> {
+
+
 	const task = await createTask();
 
 	return redirect(`/${task.id}/edit`);
@@ -25,7 +28,7 @@ export async function loader({ request }: loaderProps): Promise<{ tasks: TaskTyp
 
 const Root = () => {
 	const [filterType, setFiltertype] = useState('all');
-	const { tasks } = useLoaderData() as { tasks: TaskType[]};
+	const { tasks } = useLoaderData() as { tasks: TaskType[] };
 	const navigation = useNavigation();
 
 
@@ -128,6 +131,7 @@ const Root = () => {
 											>
 												<button type="submit">Delete</button>
 											</Form>
+											<IsDone task={task} />
 										</div>
 									</li>
 								))}
@@ -152,3 +156,43 @@ const Root = () => {
 }
 
 export default Root;
+
+type IsDoneProps = {
+	task: Nullable<TaskType>
+}
+
+const IsDone = ({ task }: IsDoneProps) => {
+	// yes, this is a `let` for later
+
+	const handleInput = async (e: React.ChangeEvent<HTMLInputElement>) => {
+		const input = e.currentTarget;
+
+		const task = await getTask(input.id);
+		updateTask(input.id, {
+			isDone: !task!.isDone,
+		});
+		console.log(task);
+
+	}
+
+	return (
+		<>
+			<input
+				id={task?.id}
+				type="checkbox"
+				name="isDone"
+				value={task?.isDone ? "true" : "false"}
+				defaultChecked={task?.isDone ? true : false}
+				onInput={handleInput}
+				aria-label={
+					task?.isDone
+						? "Remove from isDones"
+						: "Add to isDones"
+				}
+			>
+			</input>
+			<label htmlFor="isDone">Status: {task?.isDone ? "Done" : "Undone"}</label>
+		</>
+
+	);
+}
