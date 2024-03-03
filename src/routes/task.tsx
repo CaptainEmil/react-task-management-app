@@ -44,26 +44,6 @@ const Contact = () => {
 
 				{task?.description && <p>{task?.description}</p>}
 
-				<div>
-					<Form action="edit">
-						<button type="submit">Edit</button>
-					</Form>
-					<Form
-						method="post"
-						action="destroy"
-						onSubmit={(event) => {
-							if (
-								!window.confirm(
-									"Please confirm you want to delete this record."
-								)
-							) {
-								event.preventDefault();
-							}
-						}}
-					>
-						<button type="submit">Delete</button>
-					</Form>
-				</div>
 			</div>
 		</div>
 	);
