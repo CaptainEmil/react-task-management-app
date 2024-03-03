@@ -1,7 +1,7 @@
-import { Form, Outlet, useLoaderData, redirect, NavLink, useNavigation, useSubmit, } from "react-router-dom";
+import { Form, Outlet, useLoaderData, redirect, NavLink, useNavigation } from "react-router-dom";
 import { getTasks, createTask } from "../tasks";
 import TaskType from "src/types/Task";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export async function action(): Promise<Response> {
 	const task = await createTask();
@@ -15,17 +15,17 @@ type loaderProps = {
 	}
 }
 
-export async function loader({ request }: loaderProps): Promise<{ tasks: TaskType[], q: string }> {
+export async function loader({ request }: loaderProps): Promise<{ tasks: TaskType[] }> {
 	const url = new URL(request.url);
 	const q = url.searchParams.get("q");
 	const tasks = await getTasks(q!);
 
-	return { tasks, q: q! };
+	return { tasks };
 }
 
 const Root = () => {
 	const [filterType, setFiltertype] = useState('all');
-	const { tasks, q } = useLoaderData() as { tasks: TaskType[], q: string };
+	const { tasks } = useLoaderData() as { tasks: TaskType[]};
 	const navigation = useNavigation();
 
 
@@ -82,6 +82,8 @@ const Root = () => {
 											return task.isDone == true ? task : undefined;
 										case "undone":
 											return task.isDone == false ? task : undefined;
+										default:
+											return;
 									}
 
 								})
