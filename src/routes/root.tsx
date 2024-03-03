@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 export async function action(): Promise<Response> {
 	const task = await createTask();
 
-	return redirect(`/tasks/${task.id}/edit`);
+	return redirect(`/${task.id}/edit`);
 }
 
 type loaderProps = {
@@ -88,7 +88,7 @@ const Root = () => {
 								.map((task) => (
 									<li key={task.id}>
 										<NavLink
-											to={`tasks/${task.id}`}
+											to={`/${task.id}`}
 											className={({ isActive, isPending }) =>
 												isActive
 													? "active"
@@ -108,12 +108,12 @@ const Root = () => {
 											{task.isDone ? <span>Done</span> : <span>Undone</span>}
 										</NavLink>
 										<div className="button-container">
-											<Form action={`tasks/${task.id}/edit`}>
+											<Form action={`/${task.id}/edit`}>
 												<button type="submit">Edit</button>
 											</Form>
 											<Form
 												method="post"
-												action={`tasks/${task.id}/destroy`}
+												action={`/${task.id}/destroy`}
 												onSubmit={(event) => {
 													if (
 														!window.confirm(
