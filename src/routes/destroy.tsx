@@ -3,6 +3,5 @@ import { deleteContact } from "../contacts";
 
 export async function action({ params }: ActionFunctionArgs) {
   await deleteContact(params.contactId);
-  
   return redirect("/");
 }

@@ -1,12 +1,17 @@
-import { Form, useLoaderData, redirect, ActionFunctionArgs } from "react-router-dom";
+import { Form, useLoaderData, redirect, ActionFunctionArgs, useNavigate, } from "react-router-dom";
 import ContactType from "src/types/Contact";
 
 import { updateContact } from "../contacts";
 
 export async function action({ request, params }: ActionFunctionArgs) {
 	const formData = await request.formData();
+	const firstName = formData.get("first");
+	const lastName = formData.get("last");
 	const updates = Object.fromEntries(formData);
-	
+
+	updates.first;
+	updates.last;
+
 	await updateContact(params.contactId, updates);
 
 	return redirect(`/contacts/${params.contactId}`);
@@ -14,6 +19,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
 
 const EditContact = () => {
 	const { contact } = useLoaderData() as { contact: ContactType };
+	const navigate = useNavigate();
 
 	return (
 		<Form method="post" id="contact-form">
@@ -63,7 +69,12 @@ const EditContact = () => {
 			</label>
 			<p>
 				<button type="submit">Save</button>
-				<button type="button">Cancel</button>
+				<button
+					type="button"
+					onClick={() => {
+						navigate(-1);
+					}}
+				>Cancel</button>
 			</p>
 		</Form>
 	);

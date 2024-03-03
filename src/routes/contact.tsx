@@ -1,16 +1,30 @@
-import { Form, LoaderFunctionArgs, useLoaderData } from "react-router-dom";
-import { getContact } from "../contacts";
+import { Form, LoaderFunctionArgs, useLoaderData, useFetcher, ActionFunctionArgs, } from "react-router-dom";
 import ContactType from "src/types/Contact";
 import Nullable from "src/types/Nullable";
+import { getContact, updateContact } from "../contacts";
 
-export async function loader({ params }: LoaderFunctionArgs): Promise<{ contact: Nullable<ContactType>}> {
+
+
+export async function action({ request, params }: ActionFunctionArgs<any>) {
+	let formData = await request.formData();
+	return updateContact(params.contactId, {
+		favorite: formData.get("favorite") === "true",
+	});
+}
+
+export async function loader({ params }: LoaderFunctionArgs): Promise<{ contact: Nullable<ContactType> }> {
 	const contact = await getContact(params.contactId);
-
+	if (!contact) {
+	  throw new Response("", {
+		status: 404,
+		statusText: "Not Found",
+	  });
+	}
 	return { contact };
 }
 
 const Contact = () => {
-	const { contact } = useLoaderData() as { contact: Nullable<ContactType>};
+	const { contact } = useLoaderData() as { contact: Nullable<ContactType> };
 
 	return (
 		<div id="contact">
@@ -79,11 +93,16 @@ type FavoriteProps = {
 }
 
 const Favorite = ({ contact }: FavoriteProps) => {
+	const fetcher = useFetcher();
 	// yes, this is a `let` for later
 	let favorite = contact?.favorite;
 
+	if (fetcher.formData) {
+		favorite = fetcher.formData.get("favorite") === "true";
+	}
+
 	return (
-		<Form method="post">
+		<fetcher.Form method="post">
 			<button
 				name="favorite"
 				value={favorite ? "false" : "true"}
@@ -95,6 +114,6 @@ const Favorite = ({ contact }: FavoriteProps) => {
 			>
 				{favorite ? "★" : "☆"}
 			</button>
-		</Form>
+		</fetcher.Form >
 	);
 }
