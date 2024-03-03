@@ -95,7 +95,7 @@ const IsDone = ({ task }: IsDoneProps) => {
 				type="checkbox"
 				name="isDone"
 				value={isDone ? "false" : "true"}
-				defaultChecked={isDone ? true : false}
+				defaultChecked={isDone ? false : true}
 				onInput={handleInput}
 				aria-label={
 					isDone
