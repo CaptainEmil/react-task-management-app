@@ -15,17 +15,17 @@ export async function action({ request, params }: ActionFunctionArgs<any>) {
 export async function loader({ params }: LoaderFunctionArgs): Promise<{ task: Nullable<TaskType> }> {
 	const task = await getTask(params.taskId);
 	if (!task) {
-	  throw new Response("", {
-		status: 404,
-		statusText: "Not Found",
-	  });
+		throw new Response("", {
+			status: 404,
+			statusText: "Not Found",
+		});
 	}
 	return { task };
 }
 
 const Contact = () => {
 	const { task } = useLoaderData() as { task: Nullable<TaskType> };
-	
+
 	return (
 		<div id="task">
 
@@ -39,7 +39,7 @@ const Contact = () => {
 						<i>No Name</i>
 					)}
 					{" "}
-					<Favorite task={task} />
+					<IsDone task={task} />
 				</h1>
 
 				{task?.description && <p>{task?.description}</p>}
@@ -71,11 +71,11 @@ const Contact = () => {
 
 export default Contact;
 
-type FavoriteProps = {
+type IsDoneProps = {
 	task: Nullable<TaskType>
 }
 
-const Favorite = ({ task }: FavoriteProps) => {
+const IsDone = ({ task }: IsDoneProps) => {
 	const fetcher = useFetcher();
 	// yes, this is a `let` for later
 	let isDone = task?.isDone;
@@ -84,19 +84,42 @@ const Favorite = ({ task }: FavoriteProps) => {
 		isDone = fetcher.formData.get("isDone") === "true";
 	}
 
+	const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const form = e.currentTarget.closest('form');
+		fetcher.submit(form);
+	}
+
 	return (
 		<fetcher.Form method="post">
-			<button
+			<input
+				type="checkbox"
 				name="isDone"
 				value={isDone ? "false" : "true"}
+				defaultChecked={isDone ? true : false}
+				onInput={handleInput}
 				aria-label={
 					isDone
 						? "Remove from isDones"
 						: "Add to isDones"
 				}
 			>
-				Status: {isDone ? "Done" : "Undone"}
-			</button>
+			</input>
+			<label htmlFor="isDone">Status: {isDone ? "Done" : "Undone"}</label>
+
 		</fetcher.Form >
 	);
 }
+
+
+
+{/* <button
+name="isDone"
+value={isDone ? "false" : "true"}
+aria-label={
+	isDone
+		? "Remove from isDones"
+		: "Add to isDones"
+}
+>
+{isDone ? "Done" : "Undone"}
+</button> */}
