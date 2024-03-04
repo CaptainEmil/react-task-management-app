@@ -1,9 +1,9 @@
-import { Form, Outlet, useLoaderData, redirect, NavLink, useNavigation, useFetcher, ActionFunctionArgs } from "react-router-dom";
+import { Form, Outlet, useLoaderData, redirect, NavLink, useNavigation } from "react-router-dom";
 import { createTask, updateTask } from "../redux/slices/tasksSlice";
 import TaskType from "src/types/Task";
 import { useState } from "react";
 import Nullable from "src/types/Nullable";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import store, { RootState, useTypedSelector } from "../store";
 
 export function action() {
@@ -13,14 +13,7 @@ export function action() {
 	return redirect(`/${task!.id}/edit`);
 }
 
-type loaderProps = {
-	request: {
-		url: string
-	}
-}
-
-export function loader({ request }: loaderProps): { tasks: TaskType[] } {
-	const url = new URL(request.url);
+export function loader(): { tasks: TaskType[] } {
 
 	const tasks = store.getState().tasksReducer;
 

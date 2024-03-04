@@ -2,7 +2,6 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import {
 	createBrowserRouter,
-	redirect,
 	RouterProvider,
 } from "react-router-dom";
 import './index.css';
@@ -19,9 +18,9 @@ import EditTask, {
 	action as editAction
 } from './routes/edit';
 import { action as destroyAction } from './routes/destroy';
-import { Provider, useDispatch } from 'react-redux';
-import store, { RootState, useTypedSelector } from './store';
-import { createTask } from './redux/slices/tasksSlice';
+import { Provider } from 'react-redux';
+import store from './store';
+
 
 const rootContainer = document.querySelector('#root');
 

@@ -1,10 +1,10 @@
-import { LoaderFunctionArgs, useLoaderData, useFetcher, ActionFunctionArgs, AwaitProps, } from "react-router-dom";
+import { LoaderFunctionArgs, useLoaderData, ActionFunctionArgs } from "react-router-dom";
 import TaskType from "src/types/Task";
 import Nullable from "src/types/Nullable";
 import { getTask } from "../tasks";
 import { updateTask } from "../redux/slices/tasksSlice"
-import store, { AppDispatch } from "../store";
-import { useDispatch } from "react-redux";
+import store from "../store";
+
 
 
 
