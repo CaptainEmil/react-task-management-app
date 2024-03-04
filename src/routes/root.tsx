@@ -22,7 +22,7 @@ type loaderProps = {
 export function loader({ request }: loaderProps): { tasks: TaskType[] } {
 	const url = new URL(request.url);
 
-	const tasks = useTypedSelector((state: RootState) => state.tasksReducer);
+	const tasks = store.getState().tasksReducer;
 
 	return { tasks };
 }

@@ -1,20 +1,24 @@
-import { LoaderFunctionArgs, useLoaderData, useFetcher, ActionFunctionArgs, } from "react-router-dom";
+import { LoaderFunctionArgs, useLoaderData, useFetcher, ActionFunctionArgs, AwaitProps, } from "react-router-dom";
 import TaskType from "src/types/Task";
 import Nullable from "src/types/Nullable";
-import { getTask, updateTask } from "../tasks";
+import { getTask } from "../tasks";
+import { updateTask } from "../redux/slices/tasksSlice"
+import store, { AppDispatch } from "../store";
+import { useDispatch } from "react-redux";
 
 
 
 export async function action({ request, params }: ActionFunctionArgs<any>) {
 	let formData = await request.formData();
-
-	return updateTask(params.taskId, {
+	return store.dispatch(updateTask({
+		id: params.taskId,
 		isDone: formData.get("isDone") === "true",
-	});
+	}
+	));
 }
 
-export async function loader({ params }: LoaderFunctionArgs): Promise<{ task: Nullable<TaskType> }> {
-	const task = await getTask(params.taskId);
+export function loader({ params }: LoaderFunctionArgs): { task: Nullable<TaskType> } {
+	const task = getTask(params.taskId);
 	if (!task) {
 		throw new Response("", {
 			status: 404,
@@ -40,7 +44,7 @@ const Contact = () => {
 						<i>No Name</i>
 					)}
 					{" "}
-					
+
 				</h1>
 
 				{task?.description && <p>{task?.description}</p>}

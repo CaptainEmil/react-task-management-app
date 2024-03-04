@@ -31,12 +31,16 @@ export const createTask: CaseReducer<TaskType[]> = (state): TaskType[] => {
 
 
 // id?: string, updates?: TaskType
-export const updateTask: CaseReducer<TaskType[], PayloadAction<{ id: string, isDone:boolean }>> = (state, action): TaskType[] => {
+export const updateTask: CaseReducer<TaskType[], PayloadAction<TaskType>> = (state, action): TaskType[] => {
 	let tasks: TaskType[] = state;
+	console.log(tasks);
+	console.log(action);
+	
 	let task = tasks.find(task => task.id === action.payload.id);
 
 	if (!task) throw new Error("No task found for", { cause: action.payload.id });
-
+	delete action.payload.id
+	console.log(task,action.payload);
 	Object.assign(task, action.payload);
 
 	set(tasks);

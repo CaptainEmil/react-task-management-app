@@ -1,11 +1,10 @@
 import { ActionFunctionArgs, Router, redirect } from "react-router-dom";
-import { deleteTask } from "../tasks";
+import { deleteTask } from "../redux/slices/tasksSlice";
 import { connect, useDispatch } from "react-redux";
 import store from "../store";
 
-connect()(Router);
 
 export function action({ params }: ActionFunctionArgs) {
-  store.dispatch(deleteTask(params.taskId));
+  if(params.taskId!==undefined)store.dispatch(deleteTask(params.taskId));
   return redirect("/");
 }
