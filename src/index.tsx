@@ -35,61 +35,53 @@ export default function Index() {
 	);
 }
 
-const getTasks=async ()=>{
-	return await useTypedSelector((state: RootState) => state.tasksReducer) 
-}
 
 
-const Router = () => {
-	const tasks = useTypedSelector((state: RootState) => state.tasksReducer);
-	console.log(tasks);
-	
-	const dispatch = useDispatch();
 
-	const router = createBrowserRouter([
-		{
-			path: "/",
-			element: <Root />,
-			errorElement: <ErrorPage />,
-			// loader: rootLoader,
-			action: rootAction,
-			loader: rootLoader,
-			children: [
-				{
-					errorElement: <ErrorPage />,
-					children: [
-						{ index: true, element: <Index /> },
-						{
-							path: "/:taskId",
-							element: <Task />,
-							loader: taskLoader,
-							action: taskAction,
-						},
-						{
-							path: "/:taskId/edit",
-							element: <EditTask />,
-							loader: taskLoader,
-							action: editAction
-						},
-						{
-							path: "/:taskId/destroy",
-							action: destroyAction,
-							errorElement: <div>Oops! There was an error.</div>,
-						}
-					],
-				},
-			]
-		}
-	]);
-	return <RouterProvider router={router} />
-}
+
+const router = createBrowserRouter([
+	{
+		path: "/",
+		element: <Root />,
+		errorElement: <ErrorPage />,
+		// loader: rootLoader,
+		action: rootAction,
+		loader: rootLoader,
+		children: [
+			{
+				errorElement: <ErrorPage />,
+				children: [
+					{ index: true, element: <Index /> },
+					{
+						path: "/:taskId",
+						element: <Task />,
+						loader: taskLoader,
+						action: taskAction,
+					},
+					{
+						path: "/:taskId/edit",
+						element: <EditTask />,
+						loader: taskLoader,
+						action: editAction
+					},
+					{
+						path: "/:taskId/destroy",
+						action: destroyAction,
+						errorElement: <div>Oops! There was an error.</div>,
+					}
+				],
+			},
+		]
+	}
+]);
+
 
 const root = createRoot(rootContainer);
 
 root.render(
 	<StrictMode>
 		<Provider store={store}>
-			<Router />
+			<RouterProvider router={router} />
 		</Provider>
 	</StrictMode>
 )

@@ -174,7 +174,6 @@ const IsDone = ({ task }: IsDoneProps) => {
 			isDone: !task!.isDone,
 		}));
 
-		console.log(task);
 
 	}
 
