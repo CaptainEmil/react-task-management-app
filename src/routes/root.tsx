@@ -2,13 +2,13 @@ import { Form, Outlet, useLoaderData, redirect, NavLink, useNavigation } from "r
 import { createTask, updateTask } from "../redux/slices/tasksSlice";
 import TaskType from "src/types/Task";
 import { useState } from "react";
-import Nullable from "src/types/Nullable";
-import { useDispatch } from "react-redux";
-import store, { RootState, useTypedSelector } from "../store";
+import { useDispatch, useSelector } from "react-redux";
+import store, { useTypedSelector } from "../store";
+import { getTask } from "../tasks";
 
 export function action() {
 	store.dispatch(createTask());
-	const tasks = useTypedSelector((state: RootState) => state.tasksReducer);
+	const tasks = store.getState().tasksReducer;
 	const task = tasks[tasks.length - 1];
 	return redirect(`/${task!.id}/edit`);
 }
@@ -26,15 +26,6 @@ const Root = () => {
 	const navigation = useNavigation();
 
 
-	const searching =
-		navigation.location &&
-		new URLSearchParams(navigation.location.search).has(
-			"q"
-		);
-
-	// useEffect(() => {
-	// 	(document.getElementById("q") as HTMLInputElement)!.value = q;
-	// }, [q]);
 
 	return (
 		<>
@@ -53,11 +44,6 @@ const Root = () => {
 						<button onClick={() => {
 							setFiltertype("all");
 						}}>Show all</button>
-						<div
-							id="search-spinner"
-							aria-hidden
-							hidden={!searching}
-						/>
 						<div
 							className="sr-only"
 							aria-live="polite"
@@ -124,7 +110,7 @@ const Root = () => {
 											>
 												<button type="submit">Delete</button>
 											</Form>
-											<IsDone task={task} />
+											<IsDone id={task.id ?? ''} />
 										</div>
 									</li>
 								))}
@@ -151,16 +137,16 @@ const Root = () => {
 export default Root;
 
 type IsDoneProps = {
-	task: Nullable<TaskType>
+	id: string
 }
 
-const IsDone = ({ task }: IsDoneProps) => {
-	// yes, this is a `let` for later
+const IsDone = ({ id }: IsDoneProps) => {
+	const tasks=useTypedSelector((state)=>state.tasksReducer);
+	const task = tasks.find(task=>task.id===id);
 	const dispatch = useDispatch();
 
 	const handleInput = async (e: React.ChangeEvent<HTMLInputElement>) => {
 		const input = e.currentTarget;
-
 
 		dispatch(updateTask({
 			id: input.id,
@@ -171,7 +157,7 @@ const IsDone = ({ task }: IsDoneProps) => {
 	}
 
 	return (
-		<>
+		<Form action={``}>
 			<input
 				id={task?.id}
 				type="checkbox"
@@ -186,8 +172,8 @@ const IsDone = ({ task }: IsDoneProps) => {
 				}
 			>
 			</input>
-			<label htmlFor="isDone">Status: {task?.isDone ? "Done" : "Undone"}</label>
-		</>
+			<label id={task?.id + '-status-label'} htmlFor="isDone">Status: {task?.isDone ? "Done" : "Undone"}</label>
+		</Form>
 
 	);
 }

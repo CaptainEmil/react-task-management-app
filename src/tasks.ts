@@ -1,7 +1,7 @@
 import sortBy from "sort-by";
 import TaskType from "./types/Task";
 import Nullable from "./types/Nullable";
-import { CaseReducer, PayloadAction } from "@reduxjs/toolkit";
+import { CaseReducer, PayloadAction, current } from "@reduxjs/toolkit";
 
 export const getTasks = (): TaskType[] => {
 	const tasksStr = localStorage.getItem('tasks');
@@ -32,18 +32,18 @@ export const createTask: CaseReducer<TaskType[]> = (state): TaskType[] => {
 
 // id?: string, updates?: TaskType
 export const updateTask: CaseReducer<TaskType[], PayloadAction<TaskType>> = (state, action): TaskType[] => {
+	
 	let tasks: TaskType[] = state;
-
 	
 	let task = tasks.find(task => task.id === action.payload.id);
 
 	if (!task) throw new Error("No task found for", { cause: action.payload.id });
-	delete action.payload.id
+	delete action.payload.id;
 
 	Object.assign(task, action.payload);
 
 	set(tasks);
-
+	
 	return tasks;
 }
 
