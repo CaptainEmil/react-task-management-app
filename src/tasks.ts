@@ -1,7 +1,7 @@
 import sortBy from "sort-by";
 import TaskType from "./types/Task";
 import Nullable from "./types/Nullable";
-import { CaseReducer, PayloadAction, current } from "@reduxjs/toolkit";
+import { CaseReducer, PayloadAction } from "@reduxjs/toolkit";
 
 export const getTasks = (): TaskType[] => {
 	const tasksStr = localStorage.getItem('tasks');

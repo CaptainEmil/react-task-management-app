@@ -2,9 +2,9 @@ import { Form, Outlet, useLoaderData, redirect, NavLink, useNavigation } from "r
 import { createTask, updateTask } from "../redux/slices/tasksSlice";
 import TaskType from "src/types/Task";
 import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import store, { useTypedSelector } from "../store";
-import { getTask } from "../tasks";
+
 
 export function action() {
 	store.dispatch(createTask());
@@ -13,16 +13,11 @@ export function action() {
 	return redirect(`/${task!.id}/edit`);
 }
 
-export function loader(): { tasks: TaskType[] } {
 
-	const tasks = store.getState().tasksReducer;
-
-	return { tasks };
-}
 
 const Root = () => {
 	const [filterType, setFiltertype] = useState('all');
-	const { tasks } = useLoaderData() as { tasks: TaskType[] };
+	const tasks=useTypedSelector((state)=>state.tasksReducer);
 	const navigation = useNavigation();
 
 
