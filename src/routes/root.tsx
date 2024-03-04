@@ -1,15 +1,16 @@
 import { Form, Outlet, useLoaderData, redirect, NavLink, useNavigation, useFetcher, ActionFunctionArgs } from "react-router-dom";
-import { getTasks, createTask, updateTask, getTask } from "../tasks";
+import { createTask, updateTask } from "../redux/slices/tasksSlice";
 import TaskType from "src/types/Task";
 import { useState } from "react";
 import Nullable from "src/types/Nullable";
+import { useDispatch, useSelector } from "react-redux";
+import store, { RootState, useTypedSelector } from "../store";
 
-export async function action({ request, params }: ActionFunctionArgs<any>): Promise<Response> {
-
-
-	const task = await createTask();
-
-	return redirect(`/${task.id}/edit`);
+export function action() {
+	store.dispatch(createTask());
+	const tasks = useTypedSelector((state: RootState) => state.tasksReducer);
+	const task = tasks[tasks.length - 1];
+	return redirect(`/${task!.id}/edit`);
 }
 
 type loaderProps = {
@@ -18,10 +19,10 @@ type loaderProps = {
 	}
 }
 
-export async function loader({ request }: loaderProps): Promise<{ tasks: TaskType[] }> {
+export function loader({ request }: loaderProps): { tasks: TaskType[] } {
 	const url = new URL(request.url);
-	const q = url.searchParams.get("q");
-	const tasks = await getTasks(q!);
+
+	const tasks = useTypedSelector((state: RootState) => state.tasksReducer);
 
 	return { tasks };
 }
@@ -110,7 +111,6 @@ const Root = () => {
 												<i>No Name</i>
 											)}
 											{" "}
-											{task.isDone ? <span>Done</span> : <span>Undone</span>}
 										</NavLink>
 										<div className="button-container">
 											<Form action={`/${task.id}/edit`}>
@@ -163,14 +163,17 @@ type IsDoneProps = {
 
 const IsDone = ({ task }: IsDoneProps) => {
 	// yes, this is a `let` for later
+	const dispatch = useDispatch();
 
 	const handleInput = async (e: React.ChangeEvent<HTMLInputElement>) => {
 		const input = e.currentTarget;
 
-		const task = await getTask(input.id);
-		updateTask(input.id, {
+
+		dispatch(updateTask({
+			id: input.id,
 			isDone: !task!.isDone,
-		});
+		}));
+
 		console.log(task);
 
 	}
