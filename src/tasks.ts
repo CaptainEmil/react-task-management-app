@@ -30,7 +30,6 @@ export const createTask: CaseReducer<TaskType[]> = (state): TaskType[] => {
 }
 
 
-// id?: string, updates?: TaskType
 export const updateTask: CaseReducer<TaskType[], PayloadAction<TaskType>> = (state, action): TaskType[] => {
 	
 	let tasks: TaskType[] = state;

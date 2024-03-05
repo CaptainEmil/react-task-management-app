@@ -1,6 +1,5 @@
-import { Form, Outlet, useLoaderData, redirect, NavLink, useNavigation } from "react-router-dom";
+import { Form, Outlet, redirect, NavLink, useNavigation } from "react-router-dom";
 import { createTask, updateTask } from "../redux/slices/tasksSlice";
-import TaskType from "src/types/Task";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import store, { useTypedSelector } from "../store";
