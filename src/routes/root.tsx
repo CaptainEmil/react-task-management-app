@@ -3,6 +3,7 @@ import { createTask, updateTask } from "../redux/slices/tasksSlice";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import store, { useTypedSelector } from "../store";
+import { getTask } from "../tasks";
 
 
 export function action() {
@@ -136,7 +137,7 @@ type IsDoneProps = {
 
 const IsDone = ({ id }: IsDoneProps) => {
 	const tasks=useTypedSelector((state)=>state.tasksReducer);
-	const task = tasks.find(task=>task.id===id);
+	const task = getTask(tasks,id);
 	const dispatch = useDispatch();
 
 	const handleInput = async (e: React.ChangeEvent<HTMLInputElement>) => {

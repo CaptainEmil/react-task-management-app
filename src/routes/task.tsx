@@ -18,7 +18,8 @@ export async function action({ request, params }: ActionFunctionArgs<any>) {
 }
 
 export function loader({ params }: LoaderFunctionArgs): { task: Nullable<TaskType> } {
-	const task = getTask(params.taskId);
+	const tasks = store.getState().tasksReducer;
+	const task = getTask(tasks,params.taskId);
 	if (!task) {
 		throw new Response("", {
 			status: 404,

@@ -10,8 +10,7 @@ export const getTasks = (): TaskType[] => {
 	return tasks.sort(sortBy("last", "createdAt"));
 }
 
-export const getTask = (id?: string): Nullable<TaskType> => {
-	let tasks: TaskType[] = getTasks();
+export const getTask = (tasks:TaskType[],id?: string): Nullable<TaskType> => {
 	let task = tasks.find(task => task.id === id);
 
 	return task ?? null;
